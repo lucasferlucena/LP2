@@ -16,5 +16,7 @@ void TrabalhadorAssalariado::calcularPagamento(int h){
 		setSalarioM(5.8562*160);
 	else
 		setSalarioM(0);
+
+///tets
 	
 }
