@@ -29,10 +29,9 @@ int main(){
             for(j = 0; j < NUM; j++){
                 threads[n] = thread(operacao_1, i, j);
                 n++;
-
             }
         }
-        for(n=0;n<N;n++){
+        for(n = 0; n < N; n++){
             threads[n].detach();
         }
         for(i = 0; i < NUM; i++){
