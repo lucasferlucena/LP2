@@ -1,7 +1,7 @@
 #include <iostream>
 #include <ostream>
 #include <thread>
-#define NUM 8
+#define NUM 8 //tamanho da matriz
 #define N NUM*NUM
 
 using namespace std;
@@ -21,7 +21,8 @@ int main(){
     int i, j, n = 0;
     bool t = false;
 
-    if(t){
+    if(t)//com thread
+    {
         thread threads[N];
 
         for(i = 0; i < NUM; i++){
@@ -43,7 +44,8 @@ int main(){
         return 0;
 
     }
-    if(!t){
+    if(!t)//sem thread
+    {
         for(i = 0; i < NUM; i++){
             for(j = 0; j < NUM; j++){
                 operacao_1(i, j);
