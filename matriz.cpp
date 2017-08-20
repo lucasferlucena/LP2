@@ -18,11 +18,12 @@ void operacao_1(int i, int j){
 }
 
 int main(){
-    int i, j, n = 0;
+    int i, j;
     bool t = false;
 
     if(t)//com thread
     {
+        int n = 0;    
         thread threads[N];
 
         for(i = 0; i < NUM; i++){
