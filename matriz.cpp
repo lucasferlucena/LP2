@@ -32,7 +32,7 @@ int main(){
             }
         }
         for(n = 0; n < N; n++){
-            threads[n].detach();
+            threads[n].join();
         }
         for(i = 0; i < NUM; i++){
             for(j = 0; j < NUM; j++){
