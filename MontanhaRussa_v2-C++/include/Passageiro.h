@@ -16,7 +16,7 @@ class Thread;
 
 class Passageiro {
 public:
-    std::atomic<int> data;
+    static std::atomic<int> data;
 
 	Passageiro(int id, Carro *c, Thread *t);
 	virtual ~Passageiro();
