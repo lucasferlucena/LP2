@@ -10,54 +10,64 @@
 #include "include/Carro.h"
 #include "include/Parque.h"
 #include "windows.h"
-#include "include/Thread.h"
 #include <atomic>
+#include "include/Pinter.h"
 
 #define MAX_NUM_VOLTAS 50
 
 using namespace std;
 
-const int N = -1;
-const int M = 5;
+const int N = 0;
+std::atomic<int> Carro::numPassageiros = ATOMIC_VAR_INIT(N);
 std::atomic<int> Passageiro::data = ATOMIC_VAR_INIT(N);
 
-Passageiro::Passageiro(int id, Carro *c, Thread *t) {
+Passageiro::Passageiro(int id, Carro *c, Parque *t) {
 	this->id = id;
 	this->carro = c;
-	this->t = t;
-	//cout << id << endl;
+	this->parque = t;
 }
 
 Passageiro::~Passageiro() {
 }
 
 void Passageiro::entraNoCarro() {
-   // clog << "entrou " << id << endl;
-    t->lock(id);
-    Sleep(1);
-	if(std::atomic_fetch_add(&Passageiro::data, 1)  < Carro::CAPACIDADE - 2){
-            t->unlock(id);
-    }
-    cout << id << endl;
+    int maior = 0;
+    turn = 1;
 
-    Carro::numPassageiros = data;
-    cout << "Entrou";
-	carro->run();
+    for(auto &p : parque->getPassageiros()){
+        if(p->getTurn() > maior)
+            maior = p->getTurn();
+    }
+
+    turn = maior + 1;
+
+    for(auto &p : parque->getPassageiros()){
+        if(this->id == p->getId())
+            continue;
+        while((p->getTurn() != 0 && (p->getTurn() < this->turn || (p->getTurn() < this->turn  && p->getId() < id))) || Carro::numPassageiros == Carro::CAPACIDADE){
+        }
+    }
+
+	std::atomic_fetch_add(&Carro::numPassageiros, 1);
+    Printer::printInt(Carro::numPassageiros, "+");
+    turn = 0;
+
 }
 
 void Passageiro::esperaVoltaAcabar() {
-	while (!carro->getV()) {Sleep(1000);}
+	while (!(carro->getV())) {Sleep(500);}
+
 }
 
 void Passageiro::saiDoCarro() {
-    Sleep(1000);
-	std::atomic_fetch_sub(&Passageiro::data, 1);
-	Carro::numPassageiros = data;
-	cout<<"Terminou";
+	std::atomic_fetch_sub(&Carro::numPassageiros, 1);
+
+	Printer::printInt(Carro::numPassageiros, "-");
 }
 
 void Passageiro::passeiaPeloParque() {
-    Sleep(10000);
+    Printer::printString("Passeando", id);
+    Sleep(15000);
 }
 
 bool Passageiro::parqueFechado() {
@@ -71,7 +81,7 @@ void Passageiro::run() {
 	while (!parqueFechado()) {
 		entraNoCarro(); // protocolo de entrada
 
-		//esperaVoltaAcabar();
+		esperaVoltaAcabar();
 
 		saiDoCarro(); // protocolo de saida
 
@@ -83,4 +93,8 @@ void Passageiro::run() {
 
 int Passageiro::getId(){
     return id;
+}
+
+int Passageiro::getTurn(){
+    return turn;
 }

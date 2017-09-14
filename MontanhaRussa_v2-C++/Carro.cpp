@@ -9,11 +9,14 @@
 #include "include/Carro.h"
 #include "include/Parque.h"
 #include "windows.h"
+#include "atomic"
+#include "include/Pinter.h"
 
 using namespace std;
 
+bool Carro::voltaAcabou = false;
 const int Carro::CAPACIDADE = 5;
-int Carro::numPassageiros = 0;
+//std::atomic<int> Carro::numPassageiros;
 
 Carro::Carro() {
 	this->voltas = 0;
@@ -23,18 +26,18 @@ Carro::~Carro() {
 }
 
 void Carro::esperaEncher() {
-	while (Carro::numPassageiros != 4) { Sleep(500);}
+	while (Carro::numPassageiros < Carro::CAPACIDADE) { Sleep(500);}
+	Carro::voltaAcabou = false;
 }
 
 void Carro::daUmaVolta() {
-    voltaAcabou = false;
-	Sleep(3000);
-	voltaAcabou = true;
-	cout<<"Volta";
+	Sleep(10000);
+	Carro::voltaAcabou = true;
+	//cout<<"VoltaAcabou"<<Carro::voltaAcabou;
 }
 
 void Carro::esperaEsvaziar() {
-	while (Carro::numPassageiros > 0) { Sleep(2); }
+	while (Carro::numPassageiros > 0) {Sleep(5000); }
 
 }
 
@@ -43,16 +46,15 @@ int Carro::getNVoltas() {
 }
 
 void Carro::run() {
-	//while (Parque::numPessoas > 0) {
-
-		esperaEncher();
+	while (Parque::numPessoas > 0) {
+        esperaEncher();
 
 		daUmaVolta();
 
-		//esperaEsvaziar();
+		esperaEsvaziar();
 
 		voltas++;
-	//}
+	}
 }
 
 bool Carro::getV(){

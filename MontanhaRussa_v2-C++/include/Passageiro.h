@@ -18,7 +18,7 @@ class Passageiro {
 public:
     static std::atomic<int> data;
 
-	Passageiro(int id, Carro *c, Thread *t);
+	Passageiro(int id, Carro *c, Parque *t);
 	virtual ~Passageiro();
 	void entraNoCarro();
 	void esperaVoltaAcabar();
@@ -26,12 +26,14 @@ public:
 	void passeiaPeloParque();
 	bool parqueFechado();
     int getId();
+    int getTurn();
 
 	void run();
 private:
+    int turn;
 	int id;
 	Carro *carro;
-	Thread *t;
+	Parque *parque;
 };
 
 #endif /* PASSAGEIRO_H_ */

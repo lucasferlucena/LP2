@@ -4,22 +4,20 @@
 #include "include/Parque.h"
 #include "include/Carro.h"
 #include "include/Passageiro.h"
-#include "include/Thread.h"
 
 using namespace std;
 
 int main() {
-    Thread t;
 	Parque parque;
 	Carro carro;
 	Passageiro *passageiros[10];
 
     for (int i = 0; i < 10; i++) {
-    	passageiros[i] = new Passageiro(i, &carro, &t);
+    	passageiros[i] = new Passageiro(i, &carro, &parque);
     	parque.addPassageiro(passageiros[i]);
     }
 
-    thread tCarro(carro);
+    thread tCarro(Carro::run, &carro);
 
     vector<thread> tPassageiros;
     for (auto &p : parque.getPassageiros()) tPassageiros.push_back(thread(&Passageiro::run, p));

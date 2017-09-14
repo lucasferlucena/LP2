@@ -7,14 +7,15 @@
 
 #ifndef CARRO_H_
 #define CARRO_H_
+#include "atomic"
 
 class Parque;
 
 class Carro {
 public:
 	static const int CAPACIDADE;
-	static int numPassageiros;
-    bool voltaAcabou;
+	static std::atomic<int> numPassageiros;
+    static bool voltaAcabou;
 
 	Carro();
 	virtual ~Carro();
