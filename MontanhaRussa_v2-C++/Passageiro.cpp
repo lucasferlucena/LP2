@@ -11,12 +11,11 @@
 #include "include/Parque.h"
 #include "windows.h"
 #include <atomic>
-#include "include/Pinter.h"
-#include <cstdlib>
-#include <ctime>
-#include <iostream>
+#include "include/Printer.h"
+#include "time.h"
 
-#define MAX_NUM_VOLTAS 50
+
+#define MAX_NUM_VOLTAS 20
 
 using namespace std;
 
@@ -26,10 +25,10 @@ std::atomic<int> Passageiro::data = ATOMIC_VAR_INIT(N);
 
 
 
-Passageiro::Passageiro(int id, Carro *c, Parque *t) {
+Passageiro::Passageiro(int id, Carro *carro, Parque *parque) {
 	this->id = id;
-	this->carro = c;
-	this->parque = t;
+	this->carro = carro;
+	this->parque = parque;
 }
 
 Passageiro::~Passageiro() {
@@ -49,26 +48,24 @@ void Passageiro::entraNoCarro() {
     for(auto &p : parque->getPassageiros()){
         if(this->id == p->getId())
             continue;
-        while(p->getTurn() != 0 && (p->getTurn() < this->turn || (p->getTurn() == this->turn  && p->getId() < this->id)) || (Carro::numPassageiros == Carro::CAPACIDADE) || (carro->voltaAcabou)){
-        }
+        while(p->getTurn() != 0 && (p->getTurn() < this->turn || (p->getTurn() == this->turn  && p->getId() < this->id)) || (Carro::numPassageiros == Carro::CAPACIDADE) || (carro->voltaAcabou)){}
     }
 
     if(!parqueFechado())
         std::atomic_fetch_add(&Carro::numPassageiros, 1);
-    Printer::printStringE("Entrou", id, Carro::numPassageiros);
+    Printer::printStringE(" Entrou no Carro", id, Carro::numPassageiros);
 
     this->turn = 0;
 }
 
 void Passageiro::esperaVoltaAcabar() {
-
 	while (!Carro::voltaAcabou) {Sleep(500);}
-
 }
 
 void Passageiro::saiDoCarro() {
 	std::atomic_fetch_sub(&Carro::numPassageiros, 1);
-	Printer::printStringE("Saiu", id, Carro::numPassageiros);
+	Printer::printStringS(" Saiu e foi passear", id, Carro::numPassageiros);
+	Sleep(250);
 }
 
 void Passageiro::passeiaPeloParque() {
@@ -78,8 +75,7 @@ void Passageiro::passeiaPeloParque() {
             break;
     }
     std::atomic_fetch_add(&Passageiro::data, 1);
-   // Printer::printInt(Passageiro::data);
-    Sleep((rand()%10)*Passageiro::data*50);
+    Sleep((rand()%10)*Passageiro::data*100);
     std::atomic_fetch_sub(&Passageiro::data, 1);
 }
 
@@ -91,19 +87,16 @@ bool Passageiro::parqueFechado() {
 }
 
 void Passageiro::run() {
-	while (!parqueFechado()) {
+	while (!parqueFechado()){
 		entraNoCarro(); // protocolo de entrada
-        //Printer::printString("entrou", id, Carro::numPassageiros);
-        if(parqueFechado()){break;}
+        if(parqueFechado())
+            break;
 		esperaVoltaAcabar();
-        //Printer::printString("esperou", id);
 		saiDoCarro(); // protocolo de saida
-        //Printer::printString("saiu", id);
-        //Printer::printString("passeando", id);
         passeiaPeloParque(); // secao nao critica
 
 	}
-
+    Printer::printString(id, "Saiu do Parque");
 	std::atomic_fetch_sub(&Parque::numPessoas, 1);  // decrementa o numero de pessoas no parque
 }
 

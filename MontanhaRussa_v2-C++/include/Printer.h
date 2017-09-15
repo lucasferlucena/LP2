@@ -8,18 +8,14 @@ using namespace std;
 
 class Printer {
 public:
-	static void printInt(int i, string x);
-	static void printInt(int i);
 	static void printStringE(string x, int i, int n);
 	static void printStringS(string x, int i, int n);
-	static void printString(string x);
+	static void printString(string x, int i);
+	static void printString(int i, string x);
 
 private:
     static string txt;
     static string txts;
-    static string txt1;
 	static atomic_flag lock;
 };
-
-#endif /* PRINTER_H_ */
-
+#endif
