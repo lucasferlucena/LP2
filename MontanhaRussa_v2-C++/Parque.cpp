@@ -8,7 +8,8 @@
 #include "include/Parque.h"
 #include "include/Passageiro.h"
 
-int Parque::numPessoas = 10;
+const int N = 10;
+std::atomic<int> Parque::numPessoas = ATOMIC_VAR_INIT(N);
 
 Parque::Parque() {
 }

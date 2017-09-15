@@ -26,19 +26,25 @@ Carro::~Carro() {
 }
 
 void Carro::esperaEncher() {
-	while (Carro::numPassageiros < Carro::CAPACIDADE) { Sleep(500);}
-	Carro::voltaAcabou = false;
+	while (Carro::numPassageiros != Carro::CAPACIDADE) {
+            if(Parque::numPessoas.load(std::memory_order_relaxed) == 0){
+                break;
+            }
+            Sleep(250);
+    }
+    Carro::voltaAcabou = false;
 }
 
 void Carro::daUmaVolta() {
-	Sleep(10000);
+	Sleep(5000);
 	Carro::voltaAcabou = true;
 	//cout<<"VoltaAcabou"<<Carro::voltaAcabou;
 }
 
-void Carro::esperaEsvaziar() {
-	while (Carro::numPassageiros > 0) {Sleep(5000); }
-
+bool Carro::esperaEsvaziar() {
+	while (Carro::numPassageiros > 0){
+        Sleep(250);
+    }
 }
 
 int Carro::getNVoltas() {
@@ -46,14 +52,20 @@ int Carro::getNVoltas() {
 }
 
 void Carro::run() {
-	while (Parque::numPessoas > 0) {
+	while (Parque::numPessoas.load(std::memory_order_relaxed) > 0) {
+        //Printer::printString("Entrou");
         esperaEncher();
-
+        if(Parque::numPessoas.load(std::memory_order_relaxed) <= 0){break;}
+        //Printer::printString("Encheu");
 		daUmaVolta();
 
-		esperaEsvaziar();
+        //Printer::printString("Volta Acabou");
 
+        esperaEsvaziar();
+
+       // Printer::printString("Esvaziou");
 		voltas++;
+		Carro::voltaAcabou = false;
 	}
 }
 

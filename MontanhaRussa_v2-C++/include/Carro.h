@@ -16,12 +16,12 @@ public:
 	static const int CAPACIDADE;
 	static std::atomic<int> numPassageiros;
     static bool voltaAcabou;
-
+    static bool vazio;
 	Carro();
 	virtual ~Carro();
 	void esperaEncher();
 	void daUmaVolta();
-	void esperaEsvaziar();
+	bool esperaEsvaziar();
 	int getNVoltas();
 	void run();
 	bool getV();
