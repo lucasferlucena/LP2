@@ -1,0 +1,40 @@
+# depslib dependency file v1.0
+1508470222 source:c:\users\lucas\desktop\ep2\homem.cpp
+	"Homem.h"
+	"windows.h"
+
+1508470222 c:\users\lucas\desktop\ep2\pessoa.h
+	<mutex>
+	"Banheiro.h"
+	<iostream>
+
+1508466375 c:\users\lucas\desktop\ep2\mulher.h
+	"Pessoa.h"
+	<mutex>
+
+1508470232 source:c:\users\lucas\desktop\ep2\pessoa.cpp
+	<iostream>
+	"Pessoa.h"
+
+1508466337 c:\users\lucas\desktop\ep2\homem.h
+	"Pessoa.h"
+
+1508470222 source:c:\users\lucas\desktop\ep2\mulher.cpp
+	"Mulher.h"
+	"windows.h"
+
+1508463211 c:\users\lucas\desktop\ep2\banheiro.h
+
+1508463247 source:c:\users\lucas\desktop\ep2\banheiro.cpp
+	<iostream>
+	"Banheiro.h"
+
+1508465248 source:c:\users\lucas\desktop\ep2\main.cpp
+	<iostream>
+	<vector>
+	<thread>
+	"Banheiro.h"
+	"Pessoa.h"
+	"Mulher.h"
+	"Homem.h"
+
