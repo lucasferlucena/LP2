@@ -6,46 +6,83 @@ using namespace std;
 Homem::Homem(int id):Pessoa(id){}
 
 void Homem::entrarBanheiro(){
-     Pessoa::e.lock();
+    //Entra na fila
+    Pessoa::e.lock();
 
-     if(Banheiro::homemSeguido == LIMITE || Banheiro::mulherBanheiro != 0 || Banheiro::homemBanheiro == CAPACIDADE){
+    //Dorme
+    if(Banheiro::homemSeguido == LIMITE || Banheiro::mulherBanheiro != 0 || Banheiro::homemBanheiro == CAPACIDADE){
         Banheiro::homemDormindo++;
 
         Pessoa::e.unlock();
         Pessoa::homem.lock();
-     }
-
-     Banheiro::mulherSeguido = 0;
-     Banheiro::homemBanheiro++;
-     Banheiro::homemSeguido++;
-
-     if(Banheiro::homemDormindo > 0){
+    }
+    //atualiza os contadores
+    Pessoa::m.lock();
+    Banheiro::homemBanheiro++;
+    Banheiro::mulherSeguido = 0;
+    Banheiro::homemSeguido++;
+    Pessoa::m.unlock();
+    //SIGNAL
+    if(Banheiro::homemDormindo > 0 && Banheiro::homemBanheiro < CAPACIDADE && Banheiro::homemSeguido != LIMITE){
         Banheiro::homemDormindo--;
         Pessoa::homem.unlock();
-     }
-     else
+    }
+    else
         Pessoa::e.unlock();
-
-     Pessoa::m.lock();
-
-     cout << "Homem " << getId() << endl;
-
-     Pessoa::m.unlock();
-
-     Pessoa::e.lock();
-
-     Banheiro::homemBanheiro--;
-
-     if(Banheiro::homemBanheiro == 0 && Banheiro::mulherDormindo > 0){
-        Banheiro::mulherDormindo--;
-        Pessoa::mulher.unlock();
-     }
-     else
+    //SC
+    Pessoa::m.lock();
+    cout << "Homem " << getId() << endl;
+    Pessoa::m.unlock();
+    //entra na "fila" pra sair
+    Pessoa::e.lock();
+    //decrementa o nº de pessoas no banheiro
+    Banheiro::homemBanheiro--;
+    //SIGNAL
+/*
+    if(Banheiro::homemSeguido >= LIMITE && Banheiro::homemBanheiro != 0)
         Pessoa::e.unlock();
+    else{
+        if(Banheiro::mulherDormindo > 0){
+            Banheiro::mulherDormindo--;
+            Pessoa::mulher.unlock();
+        }
+        else{
+            if(Banheiro::homemDormindo > 0){
+                Banheiro::homemDormindo--;
+                Pessoa::homem.unlock();
+            }
+            else
+                Pessoa::e.unlock();
+        }
+    }
+*/
+    if(Banheiro::homemBanheiro == 0){
+        if(Banheiro::mulherDormindo > 0){
+            Banheiro::mulherDormindo--;
+            Pessoa::mulher.unlock();
+        }
+        else{
+            Banheiro::homemBanheiro = 0;
+            if(Banheiro::homemDormindo > 0){
+                Banheiro::homemDormindo--;
+                Pessoa::homem.unlock();
+            }
+            else
+                Pessoa::e.unlock();
+        }
+    }
+    else{
+        if(Banheiro::homemDormindo > 0 && Banheiro::homemSeguido < LIMITE){
+            Banheiro::homemDormindo--;
+            Pessoa::homem.unlock();
+        }
+        else
+            Pessoa::e.unlock();
+    }
 }
 
 void Homem::passeia(){
-    Sleep(1000);
+        Sleep(1);
 }
 
 void Homem::run(){

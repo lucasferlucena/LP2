@@ -6,44 +6,73 @@ using namespace std;
 Mulher::Mulher(int id):Pessoa(id){}
 
 void Mulher::entrarBanheiro(){
-     Pessoa::e.lock();
-
-     if(Banheiro::mulherSeguido == LIMITE || Banheiro::homemBanheiro != 0 || Banheiro::mulherBanheiro == CAPACIDADE){
+    //entra na fila
+    Pessoa::e.lock();
+    //dorme
+    if(Banheiro::mulherSeguido == LIMITE || Banheiro::homemBanheiro != 0 || Banheiro::mulherBanheiro == CAPACIDADE){
         Banheiro::mulherDormindo++;
 
         Pessoa::e.unlock();
         Pessoa::mulher.lock();
-     }
-
-     Banheiro::homemSeguido = 0;
-     Banheiro::mulherBanheiro++;
-     Banheiro::mulherSeguido++;
-
-     if(Banheiro::mulherDormindo > 0 ){
+    }
+    //atualiza os contadores
+    Pessoa::m.lock();
+    Banheiro::mulherBanheiro++;
+    Banheiro::homemSeguido = 0;
+    Banheiro::mulherSeguido++;
+    Pessoa::m.unlock();
+    //signal
+    if(Banheiro::mulherDormindo > 0 ){
         Banheiro::mulherDormindo--;
         Pessoa::mulher.unlock();
-     }
-     else
+    }
+    else
         Pessoa::e.unlock();
+    //sc
+    Pessoa::m.lock();
+    cout << "Mulher " << getId() << endl;
+    Pessoa::m.unlock();
+    //entra na fila pra sair
+    Pessoa::e.lock();
+    //decrementa o nº de pessoas no banheiro
+    Banheiro::mulherBanheiro--;
+    //signal
 
-     Pessoa::m.lock();
-     cout << "Mulher " << getId() << endl;
-     Pessoa::m.unlock();
-
-     Pessoa::e.lock();
-     Banheiro::mulherBanheiro--;
-
-     if(Banheiro::mulherBanheiro == 0 && Banheiro::homemDormindo > 0){
+/*    if(Banheiro::mulherBanheiro == 0 && Banheiro::homemDormindo > 0){
         Banheiro::homemDormindo--;
         Pessoa::homem.unlock();
-     }
-     else
+    }
+    else
         Pessoa::e.unlock();
+*/
 
+    if(Banheiro::mulherBanheiro == 0){
+        if(Banheiro::homemDormindo > 0){
+            Banheiro::homemDormindo--;
+            Pessoa::homem.unlock();
+        }
+        else{
+            Banheiro::mulherBanheiro = 0;
+            if(Banheiro::mulherDormindo > 0){
+                Banheiro::mulherDormindo--;
+                Pessoa::mulher.unlock();
+            }
+            else
+                Pessoa::e.unlock();
+        }
+    }
+    else{
+        if(Banheiro::mulherDormindo > 0 && Banheiro::mulherSeguido < LIMITE){
+            Banheiro::mulherDormindo--;
+            Pessoa::mulher.unlock();
+        }
+        else
+            Pessoa::e.unlock();
+    }
 }
 
 void Mulher::passeia(){
-    Sleep(1000);
+    Sleep(1);
 }
 
 void Mulher::run(){
