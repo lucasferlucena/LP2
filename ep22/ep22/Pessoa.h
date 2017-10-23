@@ -4,16 +4,15 @@
 #include <mutex>
 #include "Banheiro.h"
 #include <iostream>
-#include "windows.h"
 #include <random>
 #include <thread>
+#include <vector>
+#include <chrono>
+#include <time.h>
+#include "windows.h"
 
 #define CAPACIDADE 2
 #define LIMITE 4
-#define TEMPO_MINIMO_WC 1
-#define TEMPO_MAXIMO_WC 20
-#define TEMPO_MINIMO_MOSCANDO 5
-#define TEMPO_MAXIMO_MOSCANDO 20
 
 using namespace std;
 

@@ -11,7 +11,7 @@ public:
     static int mulherBanheiro;
     static int homemDormindo;
     static int mulherDormindo;
-
+    static int nVoltas;
 };
 #endif // BANHEIRO_H
 

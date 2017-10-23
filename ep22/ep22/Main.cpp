@@ -1,10 +1,4 @@
-#include <iostream>
-#include <vector>
-#include <thread>
-#include "Banheiro.h"
 #include "Pessoa.h"
-#include "windows.h"
-#include <chrono>
 
 #define MAX 20
 
@@ -21,8 +15,8 @@ int main() {
             pessoa[i] = new Pessoa(i, 'F');
     }
 
-   /* Pessoa::mulher.lock();
-    Pessoa::homem.lock();*/
+   Pessoa::mulher.lock();
+    Pessoa::homem.lock();
 
     vector<thread> tPessoas;
 

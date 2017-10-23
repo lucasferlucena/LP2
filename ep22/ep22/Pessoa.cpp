@@ -13,7 +13,13 @@ mutex Pessoa::homem;
 mutex Pessoa::mulher;
 mutex Pessoa::m;
 
+auto now = high_resolution_clock::now();
+auto nanos = (int)duration_cast<nanoseconds>(now.time_since_epoch()).count();
+srand(nanos);//randomiza a seed
+int a = (rand()%8000)+1000;
+
 using namespace std;
+using namespace std::chrono;
 
 Pessoa::Pessoa(int id, char sexo){
     this->id = id;
@@ -51,14 +57,14 @@ void Pessoa::entrarBanheiro(){
         Banheiro::homemBanheiro++;
         Banheiro::mulherSeguido = 0;
         Banheiro::homemSeguido++;
+
+        Pessoa::m.lock();
+        cout << "HOMEM SEGUIDO "<< Banheiro::homemSeguido << endl;
+        Pessoa::m.unlock();
         //SIGNAL
-        if(Banheiro::homemBanheiro < CAPACIDADE ){
-            if(Banheiro::homemSeguido < LIMITE && Banheiro::homemDormindo > 0){
+        if(Banheiro::homemBanheiro < CAPACIDADE && Banheiro::homemSeguido < LIMITE && Banheiro::homemDormindo > 0){
                 Banheiro::homemDormindo--;
                 Pessoa::homem.unlock();
-            }
-            else
-                Pessoa::e.unlock();
         }
         else
             Pessoa::e.unlock();
@@ -85,15 +91,16 @@ void Pessoa::entrarBanheiro(){
         Banheiro::mulherBanheiro++;
         Banheiro::homemSeguido = 0;
         Banheiro::mulherSeguido++;
+
+        Pessoa::m.lock();
+        cout << "MULHER SEGUIDA "<< Banheiro::mulherSeguido << endl;
+        Pessoa::m.unlock();
+
         //signal
-        if(Banheiro::mulherBanheiro < CAPACIDADE){
-            if(Banheiro::mulherSeguido < LIMITE && Banheiro::mulherDormindo > 0){
+        if(Banheiro::mulherBanheiro < CAPACIDADE && Banheiro::mulherSeguido < LIMITE && Banheiro::mulherDormindo > 0){
                 Banheiro::mulherDormindo--;
                 Pessoa::mulher.unlock();
             }
-            else
-                Pessoa::e.unlock();
-        }
         else
             Pessoa::e.unlock();
     }
@@ -102,18 +109,18 @@ void Pessoa::entrarBanheiro(){
 void Pessoa::usarBanheiro(){
     if(getSexo() == 'M'){
         Pessoa::m.lock();
-        cout << "HOMEM[" << getId() << "] ENTROU NO BANHEIRO" << endl;
+        cout << "HOMEM[" << getId() << "] ENTROU NO BANHEIRO"<< a << endl;
         Pessoa::m.unlock();
 
-        this_thread::sleep_for(std::chrono::milliseconds(aleatorioB));
+        this_thread::sleep_for(std::chrono::milliseconds(a));
     }
 
     if(getSexo() ==  'F'){
         Pessoa::m.lock();
-        cout << "MULHER[" << getId() << "] ENTROU NO BANHEIRO" << endl;
+        cout << "MULHER[" << getId() << "] ENTROU NO BANHEIRO"<< a << endl;
         Pessoa::m.unlock();
 
-        this_thread::sleep_for(std::chrono::milliseconds(aleatorioB));
+        this_thread::sleep_for(std::chrono::milliseconds(a));
     }
 }
 
@@ -167,7 +174,7 @@ void Pessoa::sairBanheiro(){
 }
 
 void Pessoa::passeia(){
-    this_thread::sleep_for(std::chrono::milliseconds(aleatorioP));
+    this_thread::sleep_for(std::chrono::milliseconds(a + 2000));
 }
 
 void Pessoa::run(){

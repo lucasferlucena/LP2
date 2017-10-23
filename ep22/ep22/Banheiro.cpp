@@ -7,3 +7,4 @@ int Banheiro::homemBanheiro = 0;
 int Banheiro::mulherBanheiro = 0;
 int Banheiro::homemDormindo = 0;
 int Banheiro::mulherDormindo = 0;
+int Banheiro::nVoltas = 0;

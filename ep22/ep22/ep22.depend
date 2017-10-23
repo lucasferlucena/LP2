@@ -1,27 +1,21 @@
 # depslib dependency file v1.0
-1508790689 source:c:\users\lucas\desktop\ep22\ep22\banheiro.cpp
+1508800063 source:c:\users\lucas\desktop\ep22\ep22\banheiro.cpp
 	<iostream>
 	"Banheiro.h"
 
-1508790689 c:\users\lucas\desktop\ep22\ep22\banheiro.h
+1508800063 c:\users\lucas\desktop\ep22\ep22\banheiro.h
 
-1508792189 source:c:\users\lucas\desktop\ep22\ep22\main.cpp
-	<iostream>
-	<vector>
-	<thread>
-	"Banheiro.h"
+1508800453 source:c:\users\lucas\desktop\ep22\ep22\main.cpp
 	"Pessoa.h"
-	"windows.h"
-	<chrono>
 
-1508791072 c:\users\lucas\desktop\ep22\ep22\pessoa.h
+1508801134 c:\users\lucas\desktop\ep22\ep22\pessoa.h
 	<mutex>
 	"Banheiro.h"
 	<iostream>
-	"windows.h"
 	<random>
 	<thread>
+	<vector>
 
-1508792040 source:c:\users\lucas\desktop\ep22\ep22\pessoa.cpp
+1508800138 source:c:\users\lucas\desktop\ep22\ep22\pessoa.cpp
 	"Pessoa.h"
 
